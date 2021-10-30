@@ -8,10 +8,15 @@ services:
       - "8080:8080"
     depends_on:
       - postgresqldb
+    environment:
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=create
+      - SPRING_JPA_SHOW_SQL=true
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
+      - SPRING_JPA_DATABASE_PLATFORM=org.hibernate.dialect.PostgreSQLDialect
   postgresqldb:
     image: postgres
     ports:
-      - "5432:5432"
+      - "5442:5432"
     environment:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_USER=postgres
