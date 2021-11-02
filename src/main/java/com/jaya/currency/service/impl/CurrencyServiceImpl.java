@@ -23,7 +23,7 @@ public class CurrencyServiceImpl implements CurrencyService {
 
     @Override
     public Optional<Currency> findByAbbreviation(String abbreviation) {
-        return Optional.empty();
+        return currencyRepository.findByAbbreviation(abbreviation);
     }
 
     @Override
