@@ -3,6 +3,8 @@ package com.jaya.currency.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -18,10 +20,24 @@ public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long idCurrencyOrigin;
+
+    @JoinColumn(name = "client_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Client client;
+
+    @JoinColumn(name = "currency_origin_id", nullable = false)
+    @ManyToOne
+    private Currency currencyOrigin;
+
     private BigDecimal amountOrigin;
-    private Long idCurrencyFinal;
-    private BigDecimal amountFinal;
+
+    @JoinColumn(name = "currency_final_id", nullable = false)
+    @ManyToOne
+    private Currency currencyFinal;
+
     private BigDecimal conversionRate;
-    private LocalDate date;
+
+    @Column(nullable = false)
+    @CreationTimestamp
+    private LocalDate createdAt;
 }
