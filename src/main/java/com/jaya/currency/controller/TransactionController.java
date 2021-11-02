@@ -1,8 +1,6 @@
 package com.jaya.currency.controller;
 
 import com.jaya.currency.dto.TransactionDTO;
-import com.jaya.currency.model.Client;
-import com.jaya.currency.model.Transaction;
 import com.jaya.currency.service.impl.TransactionServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,10 +21,8 @@ public class TransactionController {
     }
 
 
-    //TODO Mudar pra DTO
     @GetMapping("/client/{id}")
-    public ResponseEntity<List<TransactionDTO>> getTransactionByClient(@PathVariable Long id){
-
+    public ResponseEntity<List<TransactionDTO>> getByClient(@PathVariable Long id){
         return ResponseEntity.ok().body(transactionService.findByClient(id));
     }
 }
