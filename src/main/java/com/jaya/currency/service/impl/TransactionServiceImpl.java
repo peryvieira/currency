@@ -2,6 +2,7 @@ package com.jaya.currency.service.impl;
 
 import com.jaya.currency.dto.TransactionDTO;
 import com.jaya.currency.dto.TransactionResponseDTO;
+import com.jaya.currency.exception.ClientNotFoundException;
 import com.jaya.currency.model.Client;
 import com.jaya.currency.model.Currency;
 import com.jaya.currency.model.Transaction;
@@ -70,7 +71,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     private Client getClient(Long id){
-        return clientService.findById(id).orElseThrow(NullPointerException::new);
+        return clientService.findById(id).orElseThrow(() ->  new ClientNotFoundException(id));
     }
 
     private Currency getCurrencyByAbbreviation(String abbreviation){
