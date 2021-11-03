@@ -41,7 +41,7 @@ public class ClientController {
     }
 
     @PostMapping
-    public ResponseEntity<Client> create(@RequestBody @Valid ClientDTO clientDTO){
+    public ResponseEntity<Client> save(@RequestBody @Valid ClientDTO clientDTO){
 
         return ResponseEntity.ok().body(clientService.save(clientDTO));
     }
