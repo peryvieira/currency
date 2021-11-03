@@ -1,5 +1,6 @@
 package com.jaya.currency.service.impl;
 
+import com.jaya.currency.dto.ClientDTO;
 import com.jaya.currency.model.Client;
 import com.jaya.currency.repository.ClientRepository;
 import com.jaya.currency.service.ClientService;
@@ -28,8 +29,8 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public Client save(Client client) {
-        return clientRepository.save(client);
+    public Client save(ClientDTO clientDTO) {
+        return clientRepository.save(ClientDTO.convertToObject(clientDTO));
     }
 
     @Override

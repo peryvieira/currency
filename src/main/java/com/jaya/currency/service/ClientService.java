@@ -1,5 +1,6 @@
 package com.jaya.currency.service;
 
+import com.jaya.currency.dto.ClientDTO;
 import com.jaya.currency.model.Client;
 
 import java.util.List;
@@ -11,7 +12,7 @@ public interface ClientService {
 
     Optional<Client> findById(Long id);
 
-    Client save(Client client);
+    Client save(ClientDTO clientDTO);
 
     void delete(Long id);
 }
