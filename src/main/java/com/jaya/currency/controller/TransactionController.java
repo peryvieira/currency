@@ -6,6 +6,7 @@ import com.jaya.currency.service.impl.TransactionServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -19,7 +20,7 @@ public class TransactionController {
     }
 
     @PostMapping
-    public ResponseEntity<TransactionResponseDTO> convertCurrency(@RequestBody TransactionDTO transactionDTO){
+    public ResponseEntity<TransactionResponseDTO> convertCurrency(@RequestBody @Valid TransactionDTO transactionDTO){
         return  ResponseEntity.ok().body(transactionService.convert(transactionDTO));
     }
 
