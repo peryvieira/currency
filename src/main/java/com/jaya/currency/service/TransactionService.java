@@ -10,9 +10,7 @@ public interface TransactionService {
 
     List<TransactionResponseDTO> findByClient(Long client);
 
-    List<Transaction> findAll();
+    List<TransactionResponseDTO> findAll();
 
     TransactionResponseDTO convert(TransactionDTO transactionDTO);
-
-    void delete(Long id);
 }

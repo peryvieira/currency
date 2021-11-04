@@ -10,7 +10,7 @@ import java.util.Optional;
 @Service
 public class CurrencyServiceImpl implements CurrencyService {
 
-    private final CurrencyRepository currencyRepository;
+    private CurrencyRepository currencyRepository;
 
     public CurrencyServiceImpl(CurrencyRepository currencyRepository){
         this.currencyRepository = currencyRepository;
@@ -28,11 +28,6 @@ public class CurrencyServiceImpl implements CurrencyService {
 
     @Override
     public Currency save(Currency currency) {
-        return null;
-    }
-
-    @Override
-    public void delete(Long id) {
-
+        return currencyRepository.save(currency);
     }
 }

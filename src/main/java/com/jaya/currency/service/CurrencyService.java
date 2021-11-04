@@ -11,6 +11,4 @@ public interface CurrencyService {
     Optional<Currency> findByAbbreviation(String abbreviation);
 
     Currency save(Currency currency);
-
-    void delete(Long id);
 }
