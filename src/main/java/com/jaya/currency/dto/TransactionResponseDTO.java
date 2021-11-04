@@ -18,9 +18,9 @@ public class TransactionResponseDTO {
     private Long id;
     @NotBlank(message = "id do cliente não informado")
     private Long idClient;
-    private Long idCurrencyOrigin;
+    private String currencyOrigin;
     private BigDecimal amountOrigin;
-    private Long idCurrencyFinal;
+    private String currencyFinal;
     private BigDecimal amountFinal;
     private BigDecimal conversionRate;
     private LocalDate date;
@@ -29,9 +29,9 @@ public class TransactionResponseDTO {
         return TransactionResponseDTO.builder()
                 .id(transaction.getId())
                 .idClient(transaction.getClient().getId())
-                .idCurrencyOrigin(transaction.getCurrencyOrigin().getId())
+                .currencyOrigin(transaction.getCurrencyOrigin().getAbbreviation())
                 .amountOrigin(transaction.getAmountOrigin())
-                .idCurrencyFinal(transaction.getCurrencyFinal().getId())
+                .currencyFinal(transaction.getCurrencyFinal().getAbbreviation())
                 .amountFinal(calculateAmountFinal(transaction.getAmountOrigin(), transaction.getConversionRate()))
                 .conversionRate(transaction.getConversionRate())
                 .date(transaction.getCreatedAt()).build();
