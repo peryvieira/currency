@@ -15,7 +15,7 @@ import java.util.Optional;
 @Service
 public class ClientServiceImpl implements ClientService {
 
-    private final ClientRepository clientRepository;
+    private ClientRepository clientRepository;
 
     public ClientServiceImpl(ClientRepository clientRepository){
         this.clientRepository = clientRepository;
