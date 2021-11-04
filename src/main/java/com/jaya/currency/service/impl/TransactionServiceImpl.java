@@ -3,6 +3,7 @@ package com.jaya.currency.service.impl;
 import com.jaya.currency.dto.TransactionDTO;
 import com.jaya.currency.dto.TransactionResponseDTO;
 import com.jaya.currency.exception.ClientNotFoundException;
+import com.jaya.currency.external.ExchangeRatesApi;
 import com.jaya.currency.model.Client;
 import com.jaya.currency.model.Currency;
 import com.jaya.currency.model.Transaction;
@@ -11,6 +12,7 @@ import com.jaya.currency.service.TransactionService;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,19 +52,20 @@ public class TransactionServiceImpl implements TransactionService {
         Currency currencyOrigin = getCurrencyByAbbreviation(transactionDTO.getCurrencyAbbreviationOrigin());
         Currency currencyFinal = getCurrencyByAbbreviation(transactionDTO.getCurrencyAbbreviationFinal());
 
+        BigDecimal conversionRateOrigin = ExchangeRatesApi.getRateByCurrency(currencyOrigin);
+        BigDecimal conversionRateFinal = ExchangeRatesApi.getRateByCurrency(currencyFinal);
+        BigDecimal conversionRelative = conversionRateFinal.divide(conversionRateOrigin, MathContext.DECIMAL32);
 
-        //TODO Buscar o Rate pela API
-        BigDecimal conversionRate = BigDecimal.TEN;
 
-        Transaction transactionReturn =   transactionRepository.save(Transaction.builder()
+        Transaction transactionSaved = transactionRepository.save(Transaction.builder()
                 .client(this.getClient(transactionDTO.getIdClient()))
                 .currencyOrigin(currencyOrigin)
                 .currencyFinal(currencyFinal)
                 .amountOrigin(transactionDTO.getAmountOrigin())
-                .conversionRate(conversionRate)
+                .conversionRate(conversionRelative)
                 .createdAt(LocalDate.now()).build());
 
-        return TransactionResponseDTO.convertToDTO(transactionReturn);
+        return TransactionResponseDTO.convertToDTO(transactionSaved);
     }
 
     @Override
