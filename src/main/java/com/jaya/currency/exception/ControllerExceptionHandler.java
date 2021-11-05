@@ -55,6 +55,18 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<ErrorMessage>(message, ex.getStatus());
     }
 
+    @ExceptionHandler(ExchangeRatesApiException.class)
+    public ResponseEntity<ErrorMessage> handleExchangeRatesApiException(
+            ClientException ex, WebRequest request) {
+
+        ErrorMessage message = new ErrorMessage(
+                ex.getStatus().value(),
+                new Date(),
+                ex.getMessage(),
+                request.getDescription(false));
+        return new ResponseEntity<ErrorMessage>(message, ex.getStatus());
+    }
+
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorMessage> globalExceptionHandler(Exception ex, WebRequest request) {
