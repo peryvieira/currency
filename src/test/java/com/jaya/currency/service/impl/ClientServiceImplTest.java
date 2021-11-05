@@ -3,7 +3,7 @@ package com.jaya.currency.service.impl;
 import com.jaya.currency.dto.ClientDTO;
 import com.jaya.currency.exception.ClientException;
 import com.jaya.currency.exception.ClientNotFoundException;
-import com.jaya.currency.model.Client;
+import com.jaya.currency.entity.Client;
 import com.jaya.currency.repository.ClientRepository;
 
 import org.assertj.core.api.Assertions;
@@ -90,6 +90,36 @@ public class ClientServiceImplTest {
         BDDMockito.given(clientRepository.findById(1L)).willReturn(Optional.empty());
 
         clientService.delete(1L);
+    }
+
+    @Test
+    public void testEditClientSuccess() {
+        Client client = Client.builder().id(1L).name("Teste").build();
+        BDDMockito.given(clientRepository.findById(1L)).willReturn(Optional.of(this.clientFound()));
+        BDDMockito.given(clientRepository.save(client)).willReturn(client);
+
+        clientService.edit(ClientDTO.builder().id(1L).name("Teste").build());
+
+        InOrder inOrder = inOrder(clientRepository);
+        inOrder.verify(clientRepository, Mockito.times(1)).findById(1L);
+        inOrder.verify(clientRepository, Mockito.times(1)).save(Mockito.any(Client.class));
+    }
+
+    @Test(expected = ClientNotFoundException.class)
+    public void testEditClientNotFoundException(){
+        ClientDTO clientDTO = ClientDTO.builder().id(1L).name(this.clientFound().getName()).build();
+        BDDMockito.given(clientRepository.findById(1L)).willReturn(Optional.empty());
+
+        clientService.edit(clientDTO);
+    }
+
+    @Test(expected = ClientException.class)
+    public void testEditClientDBException(){
+        Client client = Client.builder().id(1L).name("Teste").build();
+        BDDMockito.given(clientRepository.findById(1L)).willReturn(Optional.of(this.clientFound()));
+        BDDMockito.given(clientRepository.save(Mockito.any(Client.class))).willThrow(new ClientException("Client cannot be edited on database", HttpStatus.INTERNAL_SERVER_ERROR));
+
+        clientService.edit(ClientDTO.builder().id(1L).name("Teste").build());
     }
 
 
