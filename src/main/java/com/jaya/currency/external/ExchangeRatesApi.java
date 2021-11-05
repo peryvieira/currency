@@ -1,8 +1,7 @@
 package com.jaya.currency.external;
 
-import com.jaya.currency.controller.ClientController;
 import com.jaya.currency.exception.CurrencyException;
-import com.jaya.currency.util.Currency;
+import com.jaya.currency.model.Currency;
 import com.jaya.currency.util.CurrencySerializer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

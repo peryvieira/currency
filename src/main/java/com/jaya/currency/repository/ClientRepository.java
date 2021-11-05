@@ -1,6 +1,6 @@
 package com.jaya.currency.repository;
 
-import com.jaya.currency.model.Client;
+import com.jaya.currency.entity.Client;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,6 +1,6 @@
 package com.jaya.currency.dto;
 
-import com.jaya.currency.model.Transaction;
+import com.jaya.currency.entity.Transaction;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

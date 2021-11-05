@@ -1,6 +1,6 @@
-package com.jaya.currency.model;
+package com.jaya.currency.entity;
 
-import com.jaya.currency.util.Currency;
+import com.jaya.currency.entity.Client;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
