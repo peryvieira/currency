@@ -12,13 +12,17 @@ public class  ExchangeRatesApi {
 
     private static final String accessKey = "d05dfef43ddb55051affce79f8a1845d";
 
-    public static BigDecimal getRateByCurrency(Currency currencyFinal){
+    public static CurrencySerializer loadApiExchanges(){
         RestTemplate restTemplate = new RestTemplate();
         String url = "http://api.exchangeratesapi.io/v1/latest?access_key=" + getAccessKey();
-        CurrencySerializer response = restTemplate.getForObject(url, CurrencySerializer.class);
+        return restTemplate.getForObject(url, CurrencySerializer.class);
+    }
+
+    public static BigDecimal getRateByCurrency(Currency currencyFinal){
+        CurrencySerializer currencySerializer = loadApiExchanges();
 
         try {
-           return response.getRates().get(currencyFinal.getAbbreviation());
+           return currencySerializer.getRates().get(currencyFinal.getAbbreviation());
         } catch (Exception e){
             throw new CurrencyException("Final currency cannot be found", HttpStatus.NOT_FOUND);
         }
