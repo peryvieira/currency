@@ -33,11 +33,18 @@ public class TransactionController {
         return  ResponseEntity.ok().body(transactionService.convert(transactionDTO));
     }
 
-    @ApiOperation(value = "Get Transaction by Client")
+    @ApiOperation(value = "Get Transactions by Client")
     @GetMapping("/client/{id}")
     public ResponseEntity<List<TransactionResponseDTO>> getByClient(@PathVariable Long id){
         logger.info("Called API to search transaction by Client");
         return ResponseEntity.ok().body(transactionService.findByClient(id));
+    }
+
+    @ApiOperation(value = "Get All Transactions")
+    @GetMapping
+    public ResponseEntity<List<TransactionResponseDTO>> getAll(){
+        logger.info("Called API to search all transactions on database");
+        return ResponseEntity.ok().body(transactionService.findAll());
     }
 
 }
