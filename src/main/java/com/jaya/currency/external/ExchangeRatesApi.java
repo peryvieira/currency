@@ -1,6 +1,7 @@
 package com.jaya.currency.external;
 
 import com.jaya.currency.exception.CurrencyException;
+import com.jaya.currency.exception.ExchangeRatesApiException;
 import com.jaya.currency.model.Currency;
 import com.jaya.currency.util.CurrencySerializer;
 import org.apache.logging.log4j.LogManager;
@@ -16,9 +17,16 @@ public class  ExchangeRatesApi {
     private static final String accessKey = "d05dfef43ddb55051affce79f8a1845d";
 
     public static CurrencySerializer loadApiExchanges(){
+        logger.info("Accessing External API to load rates");
         RestTemplate restTemplate = new RestTemplate();
         String url = "http://api.exchangeratesapi.io/v1/latest?access_key=" + getAccessKey();
-        return restTemplate.getForObject(url, CurrencySerializer.class);
+        try{
+            return restTemplate.getForObject(url, CurrencySerializer.class);
+        } catch (Exception e){
+            logger.error("Error to connect external API");
+            throw new ExchangeRatesApiException("Cannot connect to ExchangeRatesApi",HttpStatus.BAD_REQUEST);
+        }
+
     }
 
     public static BigDecimal getRateByCurrency(Currency currencyFinal){
