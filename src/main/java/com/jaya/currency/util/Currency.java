@@ -1,23 +1,18 @@
-package com.jaya.currency.model;
+package com.jaya.currency.util;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import java.math.BigDecimal;
 
-@Entity
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "currency")
 public class Currency {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String name;
     private String abbreviation;
+    private BigDecimal rate;
 }
