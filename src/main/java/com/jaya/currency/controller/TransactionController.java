@@ -5,6 +5,8 @@ import com.jaya.currency.dto.TransactionResponseDTO;
 import com.jaya.currency.service.impl.TransactionServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +18,8 @@ import java.util.List;
 @RequestMapping("v1/transaction")
 public class TransactionController {
 
+    private static final Logger logger = LogManager.getLogger(ClientController.class);
+
     private final TransactionServiceImpl transactionService;
 
     public TransactionController(TransactionServiceImpl transactionService){
@@ -25,12 +29,14 @@ public class TransactionController {
     @ApiOperation(value = "Convert currency")
     @PostMapping
     public ResponseEntity<TransactionResponseDTO> convertCurrency(@RequestBody @Valid TransactionDTO transactionDTO){
+        logger.info("Called API to convert currency");
         return  ResponseEntity.ok().body(transactionService.convert(transactionDTO));
     }
 
-    @ApiOperation(value = "Get Transaction by ID")
+    @ApiOperation(value = "Get Transaction by Client")
     @GetMapping("/client/{id}")
     public ResponseEntity<List<TransactionResponseDTO>> getByClient(@PathVariable Long id){
+        logger.info("Called API to search transaction by Client");
         return ResponseEntity.ok().body(transactionService.findByClient(id));
     }
 
