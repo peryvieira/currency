@@ -4,7 +4,7 @@ import com.jaya.currency.controller.ClientController;
 import com.jaya.currency.dto.ClientDTO;
 import com.jaya.currency.exception.ClientException;
 import com.jaya.currency.exception.ClientNotFoundException;
-import com.jaya.currency.model.Client;
+import com.jaya.currency.entity.Client;
 import com.jaya.currency.repository.ClientRepository;
 import com.jaya.currency.service.ClientService;
 import org.apache.logging.log4j.LogManager;
@@ -62,6 +62,24 @@ public class ClientServiceImpl implements ClientService {
             logger.info("Client {} deleted from database", id);
         }catch (Exception e){
             logger.error("Error deleting client {} from database",id);
+            throw new ClientException("Client cannot be deleted on database", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Override
+    public Client edit(ClientDTO clientDTO) {
+        Client client = this.findById(clientDTO.getId()).orElseThrow(() -> {
+            logger.error("Error finding client {} to edit", clientDTO.getId());
+            return new ClientNotFoundException(clientDTO.getId());
+        });
+        client.setName(clientDTO.getName());
+
+        try{
+            logger.info("Editing client {} on database",clientDTO.getId());
+            return clientRepository.save(client);
+        } catch (Exception e) {
+            logger.error("Error while editing client {}",clientDTO.getId());
+            throw new ClientException("Client cannot be edited on database", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

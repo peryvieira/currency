@@ -2,7 +2,7 @@ package com.jaya.currency.controller;
 
 import com.jaya.currency.dto.ClientDTO;
 import com.jaya.currency.exception.ClientNotFoundException;
-import com.jaya.currency.model.Client;
+import com.jaya.currency.entity.Client;
 import com.jaya.currency.service.impl.ClientServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -71,4 +71,10 @@ public class ClientController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Client "+ id +" deleted successfully");
     }
 
+    @ApiOperation(value = "Edit Client")
+    @PutMapping
+    public ResponseEntity<Client> edit(@RequestBody @Valid ClientDTO clientDTO){
+        logger.info("Called API to edit client");
+        return  ResponseEntity.ok().body(clientService.edit(clientDTO));
+    }
 }
