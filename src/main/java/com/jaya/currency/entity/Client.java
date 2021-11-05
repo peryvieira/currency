@@ -1,4 +1,4 @@
-package com.jaya.currency.model;
+package com.jaya.currency.entity;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;

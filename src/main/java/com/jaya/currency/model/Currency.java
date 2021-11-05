@@ -1,4 +1,4 @@
-package com.jaya.currency.util;
+package com.jaya.currency.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
