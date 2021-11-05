@@ -1,6 +1,6 @@
 package com.jaya.currency.dto;
 
-import com.jaya.currency.model.Client;
+import com.jaya.currency.entity.Client;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class ClientDTO {
 
-    private Long idClient;
+    private Long id;
     @NotNull(message = "Client name cannot be null")
     private String name;
 
