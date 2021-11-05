@@ -5,7 +5,7 @@ import com.jaya.currency.dto.TransactionResponseDTO;
 import com.jaya.currency.exception.ClientNotFoundException;
 import com.jaya.currency.exception.CurrencyException;
 import com.jaya.currency.model.Client;
-import com.jaya.currency.model.Currency;
+import com.jaya.currency.util.Currency;
 import com.jaya.currency.model.Transaction;
 import com.jaya.currency.repository.TransactionRepository;
 import org.assertj.core.api.Assertions;
@@ -29,9 +29,6 @@ public class TransactionServiceImplTest {
     private TransactionRepository transactionRepository;
     @Mock
     private ClientServiceImpl clientService;
-    @Mock
-    private CurrencyServiceImpl currencyService;
-
     @InjectMocks
     private TransactionServiceImpl transactionService;
 
@@ -74,10 +71,9 @@ public class TransactionServiceImplTest {
     @Ignore
     @Test
     public void testConvertCurrencySuccess(){
-        TransactionDTO transactionDTO = TransactionDTO.builder().idClient(1L).amountOrigin(transactionFound().getAmountOrigin()).currencyAbbreviationOrigin(transactionFound().getCurrencyOrigin().getAbbreviation())
-                .currencyAbbreviationFinal(transactionFound().getCurrencyFinal().getAbbreviation()).build();
-        BDDMockito.given(currencyService.findByAbbreviation("BRL")).willReturn(Optional.of(Currency.builder().id(1L).abbreviation("BRL").name("Real").build()));
-        BDDMockito.given(currencyService.findByAbbreviation("EUR")).willReturn(Optional.of(Currency.builder().id(2L).abbreviation("EUR").name("Euro").build()));
+        TransactionDTO transactionDTO = TransactionDTO.builder().idClient(1L).amountOrigin(transactionFound().getAmountOrigin()).currencyAbbreviationOrigin(transactionFound().getCurrencyOrigin())
+                .currencyAbbreviationFinal(transactionFound().getCurrencyFinal()).build();
+
         BDDMockito.given(transactionRepository.save(Mockito.any(Transaction.class))).willReturn(this.transactionFound());
         BDDMockito.given(clientService.findById(1L)).willReturn(Optional.of(this.clientFound()));
 
@@ -85,13 +81,6 @@ public class TransactionServiceImplTest {
 
         BDDMockito.then(transactionRepository).should(Mockito.times(1)).save(this.transactionFound());
         Assertions.assertThat(transactionResponseDTO.getAmountFinal()).isNotZero();
-    }
-
-    @Test(expected = CurrencyException.class)
-    public void testConvertNullCurrencyException(){
-        BDDMockito.given(currencyService.findByAbbreviation("BR")).willReturn(Optional.empty());
-
-        transactionService.convert(TransactionDTO.builder().currencyAbbreviationOrigin("BR").build());
     }
 
     private Client clientFound(){
@@ -104,8 +93,8 @@ public class TransactionServiceImplTest {
     private Transaction transactionFound(){
         return Transaction.builder()
                 .client(this.clientFound())
-                .currencyOrigin(Currency.builder().id(1L).abbreviation("BRL").name("Real").build())
-                .currencyFinal(Currency.builder().id(2L).abbreviation("EUR").name("Euro").build())
+                .currencyOrigin("BRL")
+                .currencyFinal("EUR")
                 .amountOrigin(BigDecimal.TEN)
                 .conversionRate(BigDecimal.valueOf(0.1550877))
                 .createdAt(LocalDate.now()).build();
@@ -117,8 +106,8 @@ public class TransactionServiceImplTest {
         list.add(Transaction.builder()
                 .id(1L)
                 .client(this.clientFound())
-                .currencyOrigin(Currency.builder().abbreviation("EUR").build())
-                .currencyFinal(Currency.builder().abbreviation("BRL").build())
+                .currencyOrigin("EUR")
+                .currencyFinal("BRL")
                 .amountOrigin(BigDecimal.TEN)
                 .conversionRate(BigDecimal.TEN)
                 .createdAt(LocalDate.now()).build());
@@ -126,8 +115,8 @@ public class TransactionServiceImplTest {
         list.add(Transaction.builder()
                 .id(2L)
                 .client(this.clientFound())
-                .currencyOrigin(Currency.builder().abbreviation("BRL").build())
-                .currencyFinal(Currency.builder().abbreviation("JPY").build())
+                .currencyOrigin("BRL")
+                .currencyFinal("JPY")
                 .amountOrigin(BigDecimal.TEN)
                 .conversionRate(BigDecimal.valueOf(5))
                 .createdAt(LocalDate.now()).build());

@@ -4,16 +4,14 @@ import com.jaya.currency.controller.ClientController;
 import com.jaya.currency.dto.TransactionDTO;
 import com.jaya.currency.dto.TransactionResponseDTO;
 import com.jaya.currency.exception.ClientNotFoundException;
-import com.jaya.currency.exception.CurrencyException;
 import com.jaya.currency.external.ExchangeRatesApi;
 import com.jaya.currency.model.Client;
-import com.jaya.currency.model.Currency;
+import com.jaya.currency.util.Currency;
 import com.jaya.currency.model.Transaction;
 import com.jaya.currency.repository.TransactionRepository;
 import com.jaya.currency.service.TransactionService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -29,14 +27,10 @@ public class TransactionServiceImpl implements TransactionService {
 
     private  TransactionRepository transactionRepository;
     private  ClientServiceImpl clientService;
-    private  CurrencyServiceImpl currencyService;
 
-
-
-    public TransactionServiceImpl(TransactionRepository transactionRepository, ClientServiceImpl clientService, CurrencyServiceImpl currencyService){
+    public TransactionServiceImpl(TransactionRepository transactionRepository, ClientServiceImpl clientService){
         this.transactionRepository = transactionRepository;
         this.clientService = clientService;
-        this.currencyService = currencyService;
     }
 
     @Override
@@ -63,21 +57,29 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public TransactionResponseDTO convert(TransactionDTO transactionDTO) {
-        Currency currencyOrigin = getCurrencyByAbbreviation(transactionDTO.getCurrencyAbbreviationOrigin());
-        Currency currencyFinal = getCurrencyByAbbreviation(transactionDTO.getCurrencyAbbreviationFinal());
+        Currency currencyOrigin = new Currency();
+        Currency currencyFinal = new Currency();
+        currencyOrigin.setAbbreviation(transactionDTO.getCurrencyAbbreviationOrigin());
+        currencyFinal.setAbbreviation(transactionDTO.getCurrencyAbbreviationFinal());
 
-        logger.info("Converting {} from {} to {}", transactionDTO.getAmountOrigin(),currencyOrigin.getName(), currencyFinal.getName());
+        logger.info("Converting {} from {} to {}", transactionDTO.getAmountOrigin(),currencyOrigin.getAbbreviation(), currencyFinal.getAbbreviation());
 
-        BigDecimal conversionRateOrigin = ExchangeRatesApi.getRateByCurrency(currencyOrigin);
-        BigDecimal conversionRateFinal = ExchangeRatesApi.getRateByCurrency(currencyFinal);
-        BigDecimal conversionRelative = conversionRateFinal.divide(conversionRateOrigin, MathContext.DECIMAL32);
+        currencyOrigin.setRate(ExchangeRatesApi.getRateByCurrency(currencyOrigin));
+        currencyFinal.setRate(ExchangeRatesApi.getRateByCurrency(currencyFinal));
+
+        /**
+        *    The free External API only returns conversion rate based on EUR.
+        *    Therefore is applied a rule for conversion on others currencies, dividing the final rate by the original rate.
+        */
+
+        BigDecimal conversionRelative = currencyFinal.getRate().divide(currencyOrigin.getRate(), MathContext.DECIMAL32);
 
         logger.info("Conversion rate to apply is {}",conversionRelative);
 
         Transaction transactionSaved = transactionRepository.save(Transaction.builder()
                 .client(this.getClient(transactionDTO.getIdClient()))
-                .currencyOrigin(currencyOrigin)
-                .currencyFinal(currencyFinal)
+                .currencyOrigin(currencyOrigin.getAbbreviation())
+                .currencyFinal(currencyFinal.getAbbreviation())
                 .amountOrigin(transactionDTO.getAmountOrigin())
                 .conversionRate(conversionRelative)
                 .createdAt(LocalDate.now()).build());
@@ -89,9 +91,5 @@ public class TransactionServiceImpl implements TransactionService {
 
     private Client getClient(Long id){
         return clientService.findById(id).orElseThrow(() ->  new ClientNotFoundException(id));
-    }
-
-    private Currency getCurrencyByAbbreviation(String abbreviation){
-        return currencyService.findByAbbreviation(abbreviation).orElseThrow(() -> new CurrencyException("Currency " + abbreviation + " cannot be found", HttpStatus.NOT_FOUND));
     }
 }

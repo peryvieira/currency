@@ -1,5 +1,6 @@
 package com.jaya.currency.model;
 
+import com.jaya.currency.util.Currency;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,17 +30,13 @@ public class Transaction {
     private Client client;
 
     @ApiModelProperty(value = "Currency to be converted")
-    @JoinColumn(name = "currency_origin_id", nullable = false)
-    @ManyToOne
-    private Currency currencyOrigin;
+    private String currencyOrigin;
 
     @ApiModelProperty(value = "Currency amount to be converted")
     private BigDecimal amountOrigin;
 
     @ApiModelProperty(value = "Currency target")
-    @JoinColumn(name = "currency_final_id", nullable = false)
-    @ManyToOne
-    private Currency currencyFinal;
+    private String currencyFinal;
 
     @ApiModelProperty(value = "Base rate to convert")
     private BigDecimal conversionRate;

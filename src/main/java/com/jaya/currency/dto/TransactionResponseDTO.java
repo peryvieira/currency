@@ -29,9 +29,9 @@ public class TransactionResponseDTO {
         return TransactionResponseDTO.builder()
                 .id(transaction.getId())
                 .idClient(transaction.getClient().getId())
-                .currencyOrigin(transaction.getCurrencyOrigin().getAbbreviation())
+                .currencyOrigin(transaction.getCurrencyOrigin())
                 .amountOrigin(transaction.getAmountOrigin())
-                .currencyFinal(transaction.getCurrencyFinal().getAbbreviation())
+                .currencyFinal(transaction.getCurrencyFinal())
                 .amountFinal(calculateAmountFinal(transaction.getAmountOrigin(), transaction.getConversionRate()))
                 .conversionRate(transaction.getConversionRate())
                 .date(transaction.getCreatedAt()).build();
