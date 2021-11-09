@@ -10,7 +10,6 @@ import static io.restassured.RestAssured.*;
 public class ClientApiTest extends BaseApi{
 
 
-    @Ignore
     @Test
     public void saveClient() throws JSONException {
 
