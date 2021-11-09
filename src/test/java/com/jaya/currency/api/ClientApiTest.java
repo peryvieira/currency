@@ -1,6 +1,8 @@
 package com.jaya.currency.api;
 
 import io.restassured.http.ContentType;
+import io.restassured.path.json.JsonPath;
+import io.restassured.response.Response;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
@@ -49,6 +51,20 @@ public class ClientApiTest extends BaseApi{
         given().when().get("/v1/client")
                 .then().assertThat().statusCode(200)
                 .body(containsString("id"),containsString("name"), containsString("createdAt"));
+    }
+
+    @Test
+    public void deleteClientSuccess() throws JSONException {
+        JSONObject requestParams = new JSONObject();
+        requestParams.put("name","Teste");
+
+        Response response =  given().body(requestParams.toString())
+                .contentType(ContentType.JSON)
+                .when().post("/v1/client");
+
+        JsonPath jsonPath = new JsonPath(response.asString());
+
+        given().when().delete("/v1/client/"+jsonPath.get("id")).then().assertThat().statusCode(204);
     }
 }
 
